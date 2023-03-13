@@ -1,0 +1,31 @@
+name: Google Colab
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client
+
+    - name: Start Colab Session
+      uses: actions/google-github-actions@master
+      with:
+        application_credentials: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        client_id: ${{ secrets.GOOGLE_CLIENT_ID }}
+        python_file_path: '/content/notebook.ipynb'
